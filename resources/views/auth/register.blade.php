@@ -29,6 +29,11 @@
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
+            <div class="mt-4">
+                <x-label for="date_of_birth" value="{{ __('Birth of Day') }}" />
+                <x-input id="date_of_birth" class="block mt-1 w-full" type='date' name="date_of_birth" :value="old('date_of_birth')" required />
+            </div>
+
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-label for="terms">
