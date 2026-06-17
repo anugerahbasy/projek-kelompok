@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'first_name' => 'Pegawai',
-                'last_name' => 'User',  // <-- TAMBAHKAN INI
+                'last_name' => 'User',
                 'email' => 'pegawai@example.com',
                 'password' => Hash::make('password123'),
                 'role' => 'pegawai',

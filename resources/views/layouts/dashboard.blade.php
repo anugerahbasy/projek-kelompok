@@ -37,9 +37,19 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto p-6">
-        @yield('content')
+    <!-- Sidebar & Content -->
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-lg min-h-screen p-4">
+            <nav class="space-y-2">
+                @include('layouts.sidebar-' . auth()->user()->role)
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            @yield('content')
+        </div>
     </div>
 
 </body>
