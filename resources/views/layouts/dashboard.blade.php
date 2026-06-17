@@ -7,6 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100">
+
     <!-- Navbar -->
     <nav class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,11 +17,12 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <span class="text-sm text-gray-600">
-                        {{ auth()->user()->full_name }}
+                        {{ auth()->user()->full_name ?? auth()->user()->name ?? 'User' }}
                         <span class="ml-2 px-2 py-1 text-xs rounded-full 
                             @if(auth()->user()->isAdmin()) bg-red-100 text-red-800
                             @elseif(auth()->user()->isManager()) bg-blue-100 text-blue-800
                             @elseif(auth()->user()->isStaff()) bg-green-100 text-green-800
+                            @elseif(auth()->user()->isPegawai()) bg-purple-100 text-purple-800
                             @elseif(auth()->user()->isKurir()) bg-yellow-100 text-yellow-800
                             @else bg-gray-100 text-gray-800 @endif">
                             {{ ucfirst(auth()->user()->role) }}
@@ -39,5 +41,6 @@
     <div class="max-w-7xl mx-auto p-6">
         @yield('content')
     </div>
+
 </body>
 </html>

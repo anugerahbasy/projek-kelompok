@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,20 +13,14 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens;
-
-    /** @use HasFactory<UserFactory> */
     use HasFactory;
-
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
+        'first_name',
+        'last_name',
         'name',
         'email',
         'password',
@@ -36,11 +29,6 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -48,25 +36,115 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
     protected $appends = [
         'profile_photo_url',
+        'full_name',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'birth_of_day' => 'date',
         ];
+    }
+
+    // ============================================
+    // ACCESSORS
+    // ============================================
+    
+    public function getFullNameAttribute(): string
+    {
+        if ($this->first_name && $this->last_name) {
+            return $this->first_name . ' ' . $this->last_name;
+        }
+        return $this->name ?? $this->email;
+    }
+
+    // ============================================
+    // ROLE CHECK METHODS
+    // ============================================
+    
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isManager(): bool
+    {
+        return $this->role === 'manager';
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === 'staff';
+    }
+
+    public function isPegawai(): bool  // <-- TAMBAHKAN INI
+    {
+        return $this->role === 'pegawai';
+    }
+
+    public function isKurir(): bool
+    {
+        return $this->role === 'kurir';
+    }
+
+    public function isClient(): bool
+    {
+        return $this->role === 'client';
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role, $roles);
+    }
+
+    // ============================================
+    // GET DASHBOARD ROUTE BASED ON ROLE
+    // ============================================
+    
+    public function getDashboardRoute(): string
+    {
+        return match ($this->role) {
+            'admin' => route('admin.dashboard'),
+            'manager' => route('manager.dashboard'),
+            'staff' => route('staff.dashboard'),
+            'pegawai' => route('pegawai.dashboard'), // <-- TAMBAHKAN INI
+            'kurir' => route('kurir.dashboard'),
+            default => route('client.dashboard'),
+        };
+    }
+
+    public function getDashboardView(): string
+    {
+        return match ($this->role) {
+            'admin' => 'role-dashboards.admin',
+            'manager' => 'role-dashboards.manager',
+            'staff' => 'role-dashboards.staff',
+            'pegawai' => 'role-dashboards.pegawai', // <-- TAMBAHKAN INI
+            'kurir' => 'role-dashboards.kurir',
+            default => 'role-dashboards.client',
+        };
+    }
+
+    // ============================================
+    // SCOPES
+    // ============================================
+    
+    public function scopeRole($query, $role)
+    {
+        return $query->where('role', $role);
+    }
+
+    public function scopeRoles($query, array $roles)
+    {
+        return $query->whereIn('role', $roles);
     }
 }

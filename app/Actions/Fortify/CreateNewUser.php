@@ -12,30 +12,28 @@ class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
 
-    /**
-     * Validate and create a newly registered user.
-     *
-     * @param  array<string, string>  $input
-     */
-    public function create(array $input): User
+    public function create(array $input)
     {
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
-            'birth_of_day' => ['required', 'date'],
-            'address' => ['required', 'string'],
+            'birth_of_day' => ['nullable', 'date'],
+            'address' => ['nullable', 'string'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
-            'role' => ['required', 'string', 'in:admin,manager,staff'],
         ])->validate();
 
+        // HANYA create user, TANPA Auth::login()!
         return User::create([
-            'name' => $input['name'],
+            'first_name' => $input['first_name'],
+            'last_name' => $input['last_name'],
+            'name' => $input['first_name'] . ' ' . $input['last_name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'birth_of_day' => $input['birth_of_day'],
-            'address' => $input['address'],
-            'role' => $input['role'],
+            'birth_of_day' => $input['birth_of_day'] ?? null,
+            'address' => $input['address'] ?? null,
+            'role' => 'client',
         ]);
     }
 }
