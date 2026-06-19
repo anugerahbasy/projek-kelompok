@@ -1,38 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth; // <-- TAMBAHKAN INI!
 
-class StockController extends Controller
+class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $products = Product::where('user_id', Auth::id())
-            ->latest()
-            ->paginate(10);
-            
-        return view('client.stock.index', compact('products'));
+        $products = Product::latest()->paginate(10);
+        return view('staff.products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('client.stock.create');
+        return view('staff.products.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -45,7 +33,16 @@ class StockController extends Controller
         ]);
 
         $data = $request->all();
+        
+        // ============================================
+        // PERBAIKAN DI SINI!
+        // ============================================
+        // Cara 1: Pakai Auth::id()
         $data['user_id'] = Auth::id();
+        
+        // Cara 2: Atau pakai auth()->user()->id
+        // $data['user_id'] = auth()->user()->id;
+        
         $data['status'] = 'active';
 
         if ($request->hasFile('image')) {
@@ -55,44 +52,22 @@ class StockController extends Controller
 
         Product::create($data);
 
-        return redirect()->route('client.stock.index')
+        return redirect()->route('staff.products.index')
             ->with('success', 'Product added successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Product $product)
     {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
-        return view('client.stock.show', compact('product'));
+        return view('staff.products.show', compact('product'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Product $product)
     {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
-        return view('client.stock.edit', compact('product'));
+        return view('staff.products.edit', compact('product'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Product $product)
     {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -115,27 +90,18 @@ class StockController extends Controller
 
         $product->update($data);
 
-        return redirect()->route('client.stock.index')
+        return redirect()->route('staff.products.index')
             ->with('success', 'Product updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Product $product)
     {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
-
         $product->delete();
 
-        return redirect()->route('client.stock.index')
+        return redirect()->route('staff.products.index')
             ->with('success', 'Product deleted successfully!');
     }
 }
