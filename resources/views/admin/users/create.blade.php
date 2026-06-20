@@ -53,9 +53,6 @@
             <select name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('role') border-red-500 @enderror" required>
                 <option value="">Select Role</option>
                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
-                <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
-                <option value="pegawai" {{ old('role') == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
                 <option value="kurir" {{ old('role') == 'kurir' ? 'selected' : '' }}>Kurir</option>
                 <option value="client" {{ old('role') == 'client' ? 'selected' : '' }}>Client</option>
             </select>

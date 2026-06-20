@@ -12,13 +12,13 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(); // <-- PAKAI Auth::user()
+        $user = Auth::user();
         return view('client.profile', compact('user'));
     }
 
     public function update(Request $request)
     {
-        $user = Auth::user(); // <-- PAKAI Auth::user()
+        $user = Auth::user();
         $userId = $user->id;
 
         $request->validate([

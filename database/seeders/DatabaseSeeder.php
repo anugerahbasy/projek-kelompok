@@ -19,27 +19,6 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
             ],
             [
-                'first_name' => 'Manager',
-                'last_name' => 'User',
-                'email' => 'manager@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'manager',
-            ],
-            [
-                'first_name' => 'Staff',
-                'last_name' => 'User',
-                'email' => 'staff@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'staff',
-            ],
-            [
-                'first_name' => 'Pegawai',
-                'last_name' => 'User',
-                'email' => 'pegawai@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'pegawai',
-            ],
-            [
                 'first_name' => 'Kurir',
                 'last_name' => 'User',
                 'email' => 'kurir@example.com',

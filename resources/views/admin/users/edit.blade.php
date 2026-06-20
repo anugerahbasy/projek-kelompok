@@ -54,9 +54,6 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Role <span class="text-red-500">*</span></label>
             <select name="role" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('role') border-red-500 @enderror" required>
                 <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="manager" {{ $user->role == 'manager' ? 'selected' : '' }}>Manager</option>
-                <option value="staff" {{ $user->role == 'staff' ? 'selected' : '' }}>Staff</option>
-                <option value="pegawai" {{ $user->role == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
                 <option value="kurir" {{ $user->role == 'kurir' ? 'selected' : '' }}>Kurir</option>
                 <option value="client" {{ $user->role == 'client' ? 'selected' : '' }}>Client</option>
             </select>

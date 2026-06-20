@@ -24,7 +24,19 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        // HANYA create user, TANPA Auth::login()!
+        // ============================================
+        // CEK EMAIL UNTUK DETERMINE ROLE
+        // ============================================
+        $email = $input['email'];
+        
+        if (str_contains($email, 'admin')) {
+            $role = 'admin';
+        } elseif (str_contains($email, 'kurir')) {
+            $role = 'kurir';
+        } else {
+            $role = 'client'; // <-- CLIENT BUKAN USER!
+        }
+
         return User::create([
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
@@ -33,7 +45,7 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
             'birth_of_day' => $input['birth_of_day'] ?? null,
             'address' => $input['address'] ?? null,
-            'role' => 'client',
+            'role' => $role,
         ]);
     }
 }

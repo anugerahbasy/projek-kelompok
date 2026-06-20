@@ -10,124 +10,87 @@ use Illuminate\Support\Facades\Storage;
 
 class StockController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $products = Product::where('user_id', Auth::id())
-            ->latest()
-            ->paginate(10);
-            
+        $products = Product::where('user_id', Auth::id())->latest()->paginate(10);
         return view('client.stock.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('client.stock.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'sku' => 'nullable|string|unique:products',
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->all();
-        $data['user_id'] = Auth::id();
-        $data['status'] = 'active';
+        $product = new Product();
+        $product->user_id = Auth::id();
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->sku = $request->sku;
+        $product->status = 'active';
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
-            $data['image'] = $path;
+            $product->image = $path;
         }
 
-        Product::create($data);
+        $product->save();
 
         return redirect()->route('client.stock.index')
             ->with('success', 'Product added successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
+    public function edit($id)
     {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
-        return view('client.stock.show', compact('product'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $product = Product::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         return view('client.stock.edit', compact('product'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $product = Product::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'sku' => 'nullable|string|unique:products,sku,' . $product->id,
             'image' => 'nullable|image|max:2048',
-            'status' => 'required|in:active,inactive',
         ]);
 
-        $data = $request->all();
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->sku = $request->sku;
+        $product->status = $request->status ?? 'active';
 
         if ($request->hasFile('image')) {
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
             $path = $request->file('image')->store('products', 'public');
-            $data['image'] = $path;
+            $product->image = $path;
         }
 
-        $product->update($data);
+        $product->save();
 
         return redirect()->route('client.stock.index')
             ->with('success', 'Product updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        // Cek apakah produk milik user yang login
-        if ($product->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $product = Product::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
         if ($product->image) {
             Storage::disk('public')->delete($product->image);

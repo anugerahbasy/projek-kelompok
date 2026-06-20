@@ -20,10 +20,8 @@
                         {{ auth()->user()->full_name ?? auth()->user()->name ?? 'User' }}
                         <span class="ml-2 px-2 py-1 text-xs rounded-full 
                             @if(auth()->user()->isAdmin()) bg-red-100 text-red-800
-                            @elseif(auth()->user()->isManager()) bg-blue-100 text-blue-800
-                            @elseif(auth()->user()->isStaff()) bg-green-100 text-green-800
-                            @elseif(auth()->user()->isPegawai()) bg-purple-100 text-purple-800
                             @elseif(auth()->user()->isKurir()) bg-yellow-100 text-yellow-800
+                            @elseif(auth()->user()->isClient()) bg-blue-100 text-blue-800
                             @else bg-gray-100 text-gray-800 @endif">
                             {{ ucfirst(auth()->user()->role) }}
                         </span>
@@ -42,7 +40,15 @@
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg min-h-screen p-4">
             <nav class="space-y-2">
-                @include('layouts.sidebar-' . auth()->user()->role)
+                @if(auth()->user()->isAdmin())
+                    @include('layouts.sidebar-admin')
+                @elseif(auth()->user()->isKurir())
+                    @include('layouts.sidebar-kurir')
+                @elseif(auth()->user()->isClient())
+                    @include('layouts.sidebar-client')
+                @else
+                    @include('layouts.sidebar-client')
+                @endif
             </nav>
         </div>
 

@@ -71,21 +71,6 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function isManager(): bool
-    {
-        return $this->role === 'manager';
-    }
-
-    public function isStaff(): bool
-    {
-        return $this->role === 'staff';
-    }
-
-    public function isPegawai(): bool  // <-- TAMBAHKAN INI
-    {
-        return $this->role === 'pegawai';
-    }
-
     public function isKurir(): bool
     {
         return $this->role === 'kurir';
@@ -114,9 +99,6 @@ class User extends Authenticatable
     {
         return match ($this->role) {
             'admin' => route('admin.dashboard'),
-            'manager' => route('manager.dashboard'),
-            'staff' => route('staff.dashboard'),
-            'pegawai' => route('pegawai.dashboard'), // <-- TAMBAHKAN INI
             'kurir' => route('kurir.dashboard'),
             default => route('client.dashboard'),
         };
@@ -126,10 +108,6 @@ class User extends Authenticatable
     {
         return match ($this->role) {
             'admin' => 'role-dashboards.admin',
-            'manager' => 'role-dashboards.manager',
-            'staff' => 'role-dashboards.staff',
-            'pegawai' => 'role-dashboards.pegawai', // <-- TAMBAHKAN INI
-            'kurir' => 'role-dashboards.kurir',
             default => 'role-dashboards.client',
         };
     }
