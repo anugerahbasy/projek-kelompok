@@ -7,10 +7,22 @@ use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
     public function boot(): void
     {
-        if ($this->app->environment('production')) {
-            URL::forceScheme('https'); // <-- URL TIDAK DIKENAL!
+        // Memaksa semua URL asset dan route menggunakan HTTPS di Railway
+        if (config('app.env') === 'production' || config('app.env') === 'staging') {
+            URL::forceScheme('https');
         }
     }
 }
