@@ -3,10 +3,8 @@
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.4",
-      "config": {
-        "maxExecutionTime": 30,
-        "phpVersion": "8.3"
-      }
+      "maxExecutionTime": 30,
+      "phpVersion": "8.3"
     }
   },
   "routes": [
